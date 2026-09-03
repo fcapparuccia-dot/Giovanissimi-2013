@@ -6,13 +6,10 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  // Endpoint CSV generato dal Google Sheet
-  const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1cC3-Yhs2x7Ej4h7ZgYJz8yu_VW8ELc9kpzgkcvCEAc/gviz/tq?tqx=out:csv&sheet=2013';
-
   useEffect(() => {
-    fetch(SHEET_URL)
+    fetch('/api/data')
       .then((res) => {
-        if (!res.ok) throw new Error('Errore nella rete');
+        if (!res.ok) throw new Error('Errore risposta API');
         return res.text();
       })
       .then((csvText) => {
@@ -44,7 +41,7 @@ export default function Home() {
   if (error) {
     return (
       <div style={{ padding: 30, fontFamily: 'sans-serif', textAlign: 'center', color: 'red' }}>
-        ⚠️ Impossibile caricare i dati dal foglio. Riprova più tardi.
+        ⚠️ Impossibile caricare i dati dal foglio. Riprova tra qualche secondo.
       </div>
     );
   }
@@ -56,7 +53,6 @@ export default function Home() {
       
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 20 }}>
         {impegni.map((row, idx) => {
-          // Trova la chiave della colonna giorno (gestisce maiuscole/minuscole e spazi)
           const giorno = row['GIORNO'] || row['giorno'] || Object.values(row)[0];
           const dove = row['DOVE'] || row['dove'] || '';
           const ore = row['ORE'] || row['ore'] || '';
@@ -65,7 +61,7 @@ export default function Home() {
           const sqB = row['SQUADRA B'] || row['squadra b'] || '';
           const note = row['NOTE'] || row['note'] || '';
 
-          if (!giorno || giorno.trim() === '') return null;
+          if (!giorno || giorno.trim() === '' || giorno.includes('GIORNO')) return null;
 
           return (
             <div key={idx} style={{
