@@ -48,7 +48,6 @@ export default function Home() {
           const keys = Object.keys(row);
           if (keys.length === 0) return null;
 
-          // Legge la Colonna A (chiave vuota '' o prima chiave keys[0]) dove c'è "dom 13-set", altrimenti usa GIORNO
           const giorno = row[''] || row[keys[0]] || row['GIORNO'] || row['giorno'] || '';
           const dove = row['DOVE'] || row['dove'] || '';
           const ore = row['ORE'] || row['ore'] || '';
@@ -59,13 +58,22 @@ export default function Home() {
 
           if (!giorno || giorno.trim() === '' || giorno.toUpperCase().includes('GIORNO')) return null;
 
+          // Assegnazione dinamica del colore di sfondo in base al tipo di impegno
+          const getBgColor = (tipo) => {
+            const t = tipo.toUpperCase();
+            if (t.includes('RITIRO')) return '#ffebee';     // Rosso tenue
+            if (t.includes('AMICHEVOLE')) return '#fffde7'; // Giallo tenue
+            if (t.includes('TORNEO')) return '#e8f5e9';     // Verde tenue
+            if (t.includes('CAMPIONATO')) return '#f3e5f5'; // Viola tenue
+            return '#f9f9f9';                               // Grigio standard
+          };
+
           return (
             <div key={idx} style={{
               border: '1px solid #e0e0e0',
               borderRadius: 8,
               padding: 12,
-              backgroundColor: comp.toUpperCase().includes('RITIRO') ? '#ffebee' : 
-                               comp.toUpperCase().includes('AMICHEVOLE') ? '#fffde7' : '#f9f9f9'
+              backgroundColor: getBgColor(comp)
             }}>
               <div style={{ fontWeight: 'bold', fontSize: 16, marginBottom: 6 }}>
                 📅 {giorno} {ore && `- 🕒 ${ore}`}
