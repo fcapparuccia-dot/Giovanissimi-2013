@@ -48,7 +48,8 @@ export default function Home() {
           const keys = Object.keys(row);
           if (keys.length === 0) return null;
 
-          const giorno = row['GIORNO'] || row['giorno'] || row[keys[0]] || '';
+          // Legge la Colonna A (chiave vuota '' o prima chiave keys[0]) dove c'è "dom 13-set", altrimenti usa GIORNO
+          const giorno = row[''] || row[keys[0]] || row['GIORNO'] || row['giorno'] || '';
           const dove = row['DOVE'] || row['dove'] || '';
           const ore = row['ORE'] || row['ore'] || '';
           const comp = row['COMPETIZIONE'] || row['competizione'] || '';
